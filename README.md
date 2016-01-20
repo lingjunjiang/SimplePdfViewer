@@ -3,8 +3,10 @@ Cordova Plugin - Simple PDF Viewer for Android
 
 **This project is currently in developing.**
 
-SimplePdfViewer is mainly aimed to provide a way to view PDF files (either local or online) 
-in Android devices.
+SimplePdfViewer is mainly aimed to provide a cordova plugin to view PDF files 
+(either local or online) in Android devices. 
+The core part is based on <a href="http://mupdf.com">MuPDF</a>, which is
+a lightweight PDF and XPS viewer.
 
 ## Overview
 1. [Supported Platforms](#supported-platforms)
