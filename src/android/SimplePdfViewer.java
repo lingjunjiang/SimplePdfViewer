@@ -18,19 +18,20 @@
 
 package org.apache.cordova.oinio;
 
-import java.io.File;
-
 import android.content.Intent;
-
 import android.net.Uri;
 import android.util.Log;
 
 import com.artifex.mupdfdemo.MuPDFActivity;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaResourceApi;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.io.File;
 
 
 public class SimplePdfViewer extends CordovaPlugin {
@@ -47,7 +48,7 @@ public class SimplePdfViewer extends CordovaPlugin {
     }
 
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("openPDF")) {
             openPDF(args, callbackContext);
             return true;
@@ -60,29 +61,32 @@ public class SimplePdfViewer extends CordovaPlugin {
     private void openPDF(final CordovaArgs args, final CallbackContext callbackContext) {
         this.cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    Log.d(LOG_TAG, "open pdf file");
-                    String localFilePath = args.getString(0);
+                    try{
+                        Log.d(LOG_TAG, "open pdf file");
+                        String localFilePath = args.getString(0);
 
-                    Uri pdfUri = getUriForArg(localFilePath);
+                        Uri uri = Uri.parse(localFilePath);
 
-                    CordovaResourceApi resourceApi = webView.getResourceApi();
+                        File tempFile = new File(uri.getPath());
+                        if (tempFile == null || !tempFile.exists()) {
+                            String errorMessage = "PDF file does not exist";
+                            callbackContext.error(errorMessage);
+                            Log.e(LOG_TAG, errorMessage);
+                            return;
+                        }
 
-                    File tempFile = resourceApi.mapUriToFile(pdfUri);
-                    if (tempFile == null || !tempFile.exists()) {
-                        String errorMessage = "PDF file does not exist";
-                        callbackContext.error(errorMessage);
-                        Log.e(LOG_TAG, errorMessage);
-                        return;
+                        //Uri uri = Uri.parse(localFilePath);
+                        Intent intent = new Intent(cordova.getActivity(), MuPDFActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setData(uri);
+
+                        cordova.getActivity().startActivity(intent);
+
+                        callbackContext.success();
+                    }catch (JSONException e){
+                        e.printStackTrace();
                     }
 
-                    Uri uri = Uri.parse(localFilePath);
-                    Intent intent = new Intent(cordova.getActivity(), MuPDFActivity.class);
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setData(pdfUri);
-
-                    cordova.getActivity().startActivity(intent);
-
-                    callbackContext.success();
                 }
             });
     }
