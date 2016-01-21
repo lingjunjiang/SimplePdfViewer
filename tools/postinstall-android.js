@@ -9,6 +9,55 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var path = require('path');
 
+console.log("Current PWD:" + __dirname);
+var projectFolder = __dirname.slice(0,__dirname.indexOf('plugins'));
+console.log("Main Folder:" + projectFolder);
+
+function copyFileSync( source, target ) {
+
+    var targetFile = target;
+    console.log("Target File:" + targetFile);
+    
+    console.log("Base Name:" + path.basename( source ));
+
+    //if target is a directory a new file with the same name will be created
+    if ( fs.existsSync( target ) ) {
+        
+        if ( fs.lstatSync( target ).isDirectory() ) {
+            targetFile = path.join( target, path.basename( source ) );
+            console.log("Add Base Target File:" + targetFile);
+        }
+    }
+
+    fs.writeFileSync(targetFile, fs.readFileSync(source));
+};
+
+function copyFolderRecursiveSync( source, target ) {
+    var files = [];
+
+    //check if folder needs to be created or integrated
+    var targetFolder = path.join( target, path.basename( source ) );
+    if ( !fs.existsSync( targetFolder ) ) {
+        fs.mkdirSync( targetFolder );
+    }
+
+    //copy
+    if ( fs.lstatSync( source ).isDirectory() ) {
+        files = fs.readdirSync( source );
+        console.log(files);
+        files.forEach( function ( file ) {
+            var curSource = path.join( source, file );
+            if ( fs.lstatSync( curSource ).isDirectory() ) {
+                console.log(curSource + "is Directory" );
+                copyFolderRecursiveSync( curSource, targetFolder );
+            } else {
+                console.log(curSource + "is File" );
+                copyFileSync( curSource, targetFolder );
+            }
+        } );
+    }
+};
+
 var copyFile = function(srcPath, targetPath) {
     fs.createReadStream(srcPath).pipe(fs.createWriteStream(targetPath));
 };
@@ -61,12 +110,18 @@ if (androidExePath === null) {
     process.exit(2);
 }
 
-var libProject = path.join('..', '..', 'plugins', 'cordova-plugin-SimplePdfViewer', 'src', 'android', 'libs', 'mupdf');
+var libProject = path.join(projectFolder,'platforms', 'android','mupdf');
+
+var srcLibProject = path.join(projectFolder,'plugins', 'cordova-plugin-SimplePdfViewer', 'src', 'android', 'libs', 'mupdf');
+var destLibProject = path.join(projectFolder,'platforms', 'android');
+
+console.log('Copying mupdf library into android project folder');
+copyFolderRecursiveSync(srcLibProject,destLibProject);
 
 console.log('Fixing application project.properties');
 fixFile(path.join('platforms', 'android', 'project.properties'), fixProjectProperties);
 
 console.log('Updating application to use mupdf' + ' library project ');
-exec(androidExePath + ' update project -p . -t "android-' + targetAndroidApi + '" -l ' + libProject, {cwd: path.resolve(process.cwd(), path.join('platforms', 'android'))});
+exec(androidExePath + ' update project -p . -t "android-' + targetAndroidApi + '" -l ' + 'mupdf', {cwd: path.resolve(process.cwd(), path.join('platforms', 'android'))});
 
 console.log("Done running SamplePdfViewer plugin android post-install script");
