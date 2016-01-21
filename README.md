@@ -31,6 +31,13 @@ cordova plugin add https://github.com/lingjunjiang/SimplePdfViewer.git
 ```javascript
 document.addEventListener('deviceready', function () {
     // TODO:
+    	//Currently, you need use the local file path
+        var filePath = "/storage/emulated/0/Download/sample.pdf";
+        SimplePdfViewer.openPDF(filePath,function(result){
+            console.log("SimplePdfViewer:" + result);
+        },function(error){
+            console.log("SimplePdfViewer Error:" + error);
+        });
 }, false);
 ```
 
