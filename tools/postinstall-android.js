@@ -9,23 +9,17 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var path = require('path');
 
-console.log("Current PWD:" + __dirname);
 var projectFolder = __dirname.slice(0,__dirname.indexOf('plugins'));
-console.log("Main Folder:" + projectFolder);
 
 function copyFileSync( source, target ) {
 
     var targetFile = target;
-    console.log("Target File:" + targetFile);
-    
-    console.log("Base Name:" + path.basename( source ));
 
     //if target is a directory a new file with the same name will be created
     if ( fs.existsSync( target ) ) {
         
         if ( fs.lstatSync( target ).isDirectory() ) {
             targetFile = path.join( target, path.basename( source ) );
-            console.log("Add Base Target File:" + targetFile);
         }
     }
 
@@ -70,11 +64,6 @@ var fixFile = function(path, fix) {
             } 
         });
     });
-};
-
-// Function to removes current cordova library project reference 
-var fixSDKProjectProperties = function(data) {
-    return data.replace(/android\.library\.reference.*cordova\/framework\n/, '');
 };
 
 // Function to manifest merger
