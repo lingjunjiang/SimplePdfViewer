@@ -74,7 +74,6 @@ public class MuPDFCore
 	private native LinkInfo [] getPageLinksInternal(int page);
 	private native RectF[] getWidgetAreasInternal(int page);
 	private native Annotation[] getAnnotationsInternal(int page);
-	private native OutlineItem [] getOutlineInternal();
 	private native boolean hasOutlineInternal();
 	private native boolean needsPasswordInternal();
 	private native boolean authenticatePasswordInternal(String password);
@@ -93,7 +92,6 @@ public class MuPDFCore
 	private native void endProofInternal(String filename);
 	private native int getNumSepsOnPageInternal(int page);
 	private native int controlSepOnPageInternal(int page, int sep, boolean disable);
-	private native Separation getSepInternal(int page, int sep);
 
 	public native boolean javascriptSupported();
 
@@ -344,9 +342,6 @@ public class MuPDFCore
 		return hasOutlineInternal();
 	}
 
-	public synchronized OutlineItem [] getOutline() {
-		return getOutlineInternal();
-	}
 
 	public synchronized boolean needsPassword() {
 		return needsPasswordInternal();
@@ -394,7 +389,4 @@ public class MuPDFCore
 		return controlSepOnPageInternal(page, sep, disable);
 	}
 
-	public synchronized Separation getSep(int page, int sep) {
-		return getSepInternal(page, sep);
-	}
 }

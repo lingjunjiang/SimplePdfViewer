@@ -167,7 +167,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 		{
 			core = new MuPDFCore(this, path);
 			// New file: drop the old outline data
-			OutlineActivityData.set(null);
 		}
 		catch (Exception e)
 		{
@@ -189,8 +188,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 		try
 		{
 			core = new MuPDFCore(this, buffer, magic);
-			// New file: drop the old outline data
-			OutlineActivityData.set(null);
 		}
 		catch (Exception e)
 		{
@@ -279,7 +276,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 					}
 					core = openFile(path);
 				}
-				SearchTaskResult.set(null);
 			}
 			if (core != null && core.needsPassword()) {
 				//requestPassword(savedInstanceState);
