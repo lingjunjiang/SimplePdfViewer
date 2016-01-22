@@ -107,9 +107,6 @@ var destLibProject = path.join(projectFolder,'platforms', 'android');
 console.log('Copying mupdf library into android project folder');
 copyFolderRecursiveSync(srcLibProject,destLibProject);
 
-console.log('Fixing application project.properties');
-fixFile(path.join('platforms', 'android', 'project.properties'), fixProjectProperties);
-
 console.log('Updating application to use mupdf' + ' library project ');
 exec(androidExePath + ' update project -p . -t "android-' + targetAndroidApi + '" -l ' + 'mupdf', {cwd: path.resolve(process.cwd(), path.join('platforms', 'android'))});
 
