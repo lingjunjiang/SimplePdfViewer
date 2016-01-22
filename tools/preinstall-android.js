@@ -7,6 +7,6 @@ if (process.version < 'v0.12')
 else {
     console.log("Running SamplePdfViewer plugin android pre-install script");
     var execSync = require('child_process').execSync;
-    execSync('cordova build android');
+    //execSync('cordova build android');
     console.log("Done SamplePdfViewer plugin android pre-install script");
 }
